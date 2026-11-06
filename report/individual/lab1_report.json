@@ -1,0 +1,223 @@
+{
+ "seed": 5618,
+ "predictions": {
+  "ml_f1": {
+   "text": "F1 ~ 0.88, precision sẽ cao hơn recall vì tập dữ liệu mất cân bằng (ít spam) và mô hình sẽ cẩn trọng hơn khi dự đoán tin nhắn là spam để tránh chặn nhầm tin nhắn thông thường.",
+   "time": "14:05:44"
+  },
+  "ml_lr": {
+   "text": "lr=0.001 thì đường loss sẽ giảm cực kỳ chậm,lr=50 thì đường loss sẽ dao động dữ dội vì bước nhảy quá lớn liên tục vượt quá điểm tối ưu.",
+   "time": "14:05:56"
+  },
+  "dl_curve": {
+   "text": "Val loss sẽ không giảm mãi, MLP sẽ cao hơn logistic regression ở phần 1 về F1",
+   "time": "14:06:40"
+  },
+  "dl_relu": {
+   "text": "tương đương với mô hình Linear Regression. F1 gần như chắc chắn sẽ giảm",
+   "time": "14:06:55"
+  },
+  "llm_models": {
+   "text": "Tôi dự đoán model lớn sẽ có F1 nhỉnh hơn model nhỏ nhưng chênh lệch có thể không lớn trên 40 tin SUB. Model lớn sẽ đắt hơn rõ rệt và thường có latency cao hơn. LLM có thể hiểu ngữ cảnh tốt, nhưng chưa chắc thắng Embedding + LogReg về F1/độ trễ trên bài toán phân loại đơn giản.",
+   "time": "14:11:56"
+  },
+  "llm_fewshot": {
+   "text": "dự đoán few-shot có thể cải thiện hoặc giữ nguyên F1 nhờ 4 ví dụ giúp model hiểu ranh giới spam/ham cụ thể hơn. Tuy nhiên, chi phí input mỗi tin sẽ tăng nhiều lần vì 4 ví dụ được lặp lại trong mọi prompt; latency cũng có thể tăng",
+   "time": "14:16:56"
+  },
+  "tradeoff": {
+   "text": "dự đoán BoW + Logistic Regression sẽ rất nhanh và có khả năng đạt SLA 50 ms; Embedding + LogReg có thể cân bằng tốt hơn về F1 nhưng phụ thuộc tốc độ encode MiniLM. Các model LLM nhiều khả năng vượt SLA khi gọi tuần tự từng tin và có chi phí API",
+   "time": "14:31:40"
+  },
+  "hard_eval": {
+   "text": "dự đoán accuracy/F1 sẽ giảm rõ rệt so với test thường vì 50 case được thiết kế để đánh lừa mô hình. BoW có thể khó nhất ở nhóm né từ khoá; LLM có thể khó ở prompt injection, spam giọng tự nhiên và các tin ham có nhiều từ khoá spam.",
+   "time": "14:36:56"
+  },
+  "emb_search": {
+   "text": "kết quả gần nhất sẽ là spam",
+   "time": "14:39:20"
+  }
+ },
+ "checks": {
+  "1.1 vectorize": true,
+  "1.2 sigmoid / predict_proba": true,
+  "1.3 train_logreg": true,
+  "1.4 metrics": true,
+  "2.1 build_mlp": true,
+  "2.2 train_mlp": true,
+  "4.2–4.3 prompt / parse_label": true,
+  "4.1 + 4.4 call_openai / llm_classify_batch": true,
+  "3.1–3.2 cosine / top_k_similar": true,
+  "3.3 knn_predict": true
+ },
+ "experiments": [
+  {
+   "key": "ml_f1",
+   "time": "14:05:46"
+  },
+  {
+   "key": "ml_lr",
+   "time": "14:05:57"
+  },
+  {
+   "key": "dl_curve",
+   "time": "14:06:43"
+  },
+  {
+   "key": "dl_relu",
+   "time": "14:06:57"
+  },
+  {
+   "key": "llm_models",
+   "time": "14:11:58"
+  },
+  {
+   "key": "llm_models",
+   "time": "14:14:58"
+  },
+  {
+   "key": "llm_models",
+   "time": "14:16:13"
+  },
+  {
+   "key": "llm_fewshot",
+   "time": "14:16:57"
+  },
+  {
+   "key": "llm_models",
+   "time": "14:23:39"
+  },
+  {
+   "key": "llm_models",
+   "time": "14:30:00"
+  },
+  {
+   "key": "tradeoff",
+   "time": "14:31:42"
+  },
+  {
+   "key": "llm_fewshot",
+   "time": "14:34:46"
+  },
+  {
+   "key": "hard_eval",
+   "time": "14:36:58"
+  },
+  {
+   "key": "emb_search",
+   "time": "14:39:21"
+  },
+  {
+   "key": "hard_eval",
+   "time": "14:40:41"
+  }
+ ],
+ "challenge": 2,
+ "results": {
+  "1. BoW + LogReg (tự code)": {
+   "accuracy": 0.9703225806451613,
+   "precision": 0.9882352941176471,
+   "recall": 0.7924528301886793,
+   "f1": 0.8795811518324608,
+   "f1_SUB": 0.8571428571428571,
+   "train_s": 4.550582937999934,
+   "msg_per_s": 31369.36168621287,
+   "p50_ms": 0.05238600033408147,
+   "p95_ms": 0.08751000013944571,
+   "usd_per_1k": 0.0
+  },
+  "2. BoW + MLP (deep learning)": {
+   "accuracy": 0.9793548387096774,
+   "precision": 0.9787234042553191,
+   "recall": 0.8679245283018868,
+   "f1": 0.9199999999999999,
+   "f1_SUB": 0.9189189189189189,
+   "train_s": 4.169936751000023,
+   "msg_per_s": 24580.3975490438,
+   "p50_ms": 0.24659800010340405,
+   "p95_ms": 0.3762017993722109,
+   "usd_per_1k": 0.0
+  },
+  "4a. LLM nhỏ zero-shot": {
+   "accuracy": 0.875,
+   "precision": 0.8260869565217391,
+   "recall": 0.95,
+   "f1": 0.8837209302325583,
+   "f1_SUB": 0.8837209302325583,
+   "train_s": 0.0,
+   "msg_per_s": 0.8746902627613219,
+   "p50_ms": 673.1404060001296,
+   "p95_ms": 3134.943562849912,
+   "usd_per_1k": 0.0
+  },
+  "4b. LLM lớn zero-shot": {
+   "accuracy": 0.925,
+   "precision": 0.9473684210526315,
+   "recall": 0.9,
+   "f1": 0.9230769230769231,
+   "f1_SUB": 0.9230769230769231,
+   "train_s": 0.0,
+   "msg_per_s": 1.1810994829842156,
+   "p50_ms": 347.8879454996786,
+   "p95_ms": 2407.955924949647,
+   "usd_per_1k": 0.0
+  },
+  "4c. LLM nhỏ few-shot": {
+   "accuracy": 0.875,
+   "precision": 0.8947368421052632,
+   "recall": 0.85,
+   "f1": 0.8717948717948718,
+   "f1_SUB": 0.8717948717948718,
+   "train_s": 0.0,
+   "msg_per_s": 0.7832865348476953,
+   "p50_ms": 718.9346089999162,
+   "p95_ms": 3637.627667699598,
+   "usd_per_1k": 0.0
+  },
+  "3a. Encoder (MiniLM) + kNN": {
+   "accuracy": 0.96,
+   "precision": 0.831858407079646,
+   "recall": 0.8867924528301887,
+   "f1": 0.858447488584475,
+   "f1_SUB": 0.9473684210526316,
+   "train_s": 78.49922573399999,
+   "msg_per_s": 40.2161990167255,
+   "p50_ms": 39.19223949969819,
+   "p95_ms": 59.38018660067426,
+   "usd_per_1k": 0.0
+  },
+  "3b. Encoder (MiniLM) + LogReg": {
+   "accuracy": 0.9793548387096774,
+   "precision": 0.9090909090909091,
+   "recall": 0.9433962264150944,
+   "f1": 0.9259259259259259,
+   "f1_SUB": 1.0,
+   "train_s": 78.93465054800072,
+   "msg_per_s": 54.32931590614987,
+   "p50_ms": 23.762214000271342,
+   "p95_ms": 36.7783515994688,
+   "usd_per_1k": 0.0
+  },
+  "3c. Encoder (MiniLM) + MLP head": {
+   "accuracy": 0.9780645161290322,
+   "precision": 0.9158878504672897,
+   "recall": 0.9245283018867925,
+   "f1": 0.9201877934272301,
+   "f1_SUB": 1.0,
+   "train_s": 79.42357101700054,
+   "msg_per_s": 53.85522417989537,
+   "p50_ms": 24.424734500371414,
+   "p95_ms": 30.39090585007215,
+   "usd_per_1k": 0.0
+  },
+  "Challenge 3 - MLP 4x512": {
+   "accuracy": 0.9767741935483871,
+   "precision": 0.9888888888888889,
+   "recall": 0.839622641509434,
+   "f1": 0.9081632653061226,
+   "f1_SUB": 0.9189189189189189,
+   "train_s": 72.03350340100042,
+   "usd_per_1k": 0.0
+  }
+ }
+}
